@@ -18,7 +18,7 @@ public class Image
 	 *@param ext	  The extension of the file
 	 *@return A String representing the complete path of a file
 	 */
-	public String image_path(String path, String name, String ext)
+	public static String image_path(String path, String name, String ext)
 	{
 		return path + "/" + name + "." + ext;
 	}
@@ -32,7 +32,7 @@ public class Image
 	 *@param ext	  The extension and thus format of the file to be saved
 	 *@return Returns true if the save is succesful
 	 */
-	public boolean setImage(BufferedImage image, File file, String ext)
+	public static boolean setImage(BufferedImage image, File file, String ext)
 	{
 		try
 		{
@@ -56,7 +56,7 @@ public class Image
 	 *@see WritableRaster
 	 *@see DataBufferByte
 	 */
-	public byte[] get_byte_data(BufferedImage image)
+	public static byte[] get_byte_data(BufferedImage image)
 	{
 		WritableRaster raster   = image.getRaster();
 		DataBufferByte buffer = (DataBufferByte)raster.getDataBuffer();
@@ -68,7 +68,7 @@ public class Image
 	 *@param image The image to put into user space, removes compression interferences
 	 *@return The user space version of the supplied image
 	 */
-	public BufferedImage user_space(BufferedImage image)
+	public static BufferedImage duplicateImage(BufferedImage image)
 	{
 		//create new_img with the attributes of image
 		BufferedImage new_img  = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
@@ -84,7 +84,7 @@ public class Image
 	 *@return A BufferedImage of the supplied file path
 	 *@see	Steganography.image_path
 	 */
-	public BufferedImage getImage(String f)
+	public static BufferedImage getImage(String f)
 	{
 		BufferedImage 	image	= null;
 		File 		file 	= new File(f);

@@ -13,7 +13,8 @@ public class Image_Filter extends javax.swing.filechooser.FileFilter {
         String extension = getExtension(f);
         if (extension != null) {
             if (extension.equals("jpeg") ||
-                extension.equals("png")) {
+                extension.equals("png") ||
+                extension.equals("jpg")){
                     return true;
             } else {
                 return false;

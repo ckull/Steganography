@@ -1,11 +1,5 @@
  
 /*
- *@author  William_Wilson
- *@version 1.6
- *Created: May 8, 2007
- */
-
-/*
  *import list
  */
 import java.io.File;
@@ -16,9 +10,6 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
 import java.security.PublicKey;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.awt.Point;
 import java.awt.Graphics2D;
@@ -37,69 +28,39 @@ import javax.xml.bind.DatatypeConverter;
  */
 public class Steganography
 {
-	/*
-	 *Encrypt an image with text, the output file will be of type .png
-	 *@param path		 The path (folder) containing the image to modify
-	 *@param original	The name of the image to modify
-	 *@param ext1		  The extension type of the image to modify (jpg, png)
-	 *@param stegan	  The output name of the file
-	 *@param message  The text to hide in the image
-	 *@param type	  integer representing either basic or advanced encoding
-	 */
-	Image imageManager = new Image();
+
+	
 	
 	public boolean encode(String path, String original, String ext1, String stegan, String message)
 	{
-		String			file_name 	= imageManager.image_path(path,original,ext1);
-		BufferedImage 	image_orig	= imageManager.getImage(file_name);
+		String			file_name 	= Image.image_path(path,original,ext1);
+		BufferedImage 	image_orig	= Image.getImage(file_name);
 		
-		
-		//user space is not necessary for Encrypting
-		BufferedImage image = imageManager.user_space(image_orig);
-//		String md5 = getHash(message, "MD5");
-//		System.out.println("Original Text: " + message);
-//		System.out.println("Hash: " + md5);
+		BufferedImage image = Image.duplicateImage(image_orig);
+
 		image = add_text(image,message);
 		
 		
-		return(imageManager.setImage(image,new File(imageManager.image_path(path,stegan,"png")),"png"));
+		return(Image.setImage(image,new File(Image.image_path(path,stegan,"png")),"png"));
 	}
 	
 	public boolean encode(String path, String original, String ext1, String stegan, String message, String algorithm)
 	{
-		String			file_name 	= imageManager.image_path(path,original,ext1);
-		BufferedImage 	image_orig	= imageManager.getImage(file_name);
+		String			file_name 	= Image.image_path(path,original,ext1);
+		BufferedImage 	image_orig	= Image.getImage(file_name);
 		
 		
 		//user space is not necessary for Encrypting
-		BufferedImage image = imageManager.user_space(image_orig);
+		BufferedImage image = Image.duplicateImage(image_orig);
 		String hash = getHash(message, algorithm);
 		System.out.println("Original Text: " + message);
 		System.out.println("Hash: " + hash);
 		image = add_text(image,hash);
 		
 		
-		return(imageManager.setImage(image,new File(imageManager.image_path(path,stegan,"png")),"png"));
+		return(Image.setImage(image,new File(Image.image_path(path,stegan,"png")),"png"));
 	}
-	
-	public boolean encode(String path, String original, String ext1, String stegan, String message, boolean advance) throws Exception
-	{
-		String			file_name 	= imageManager.image_path(path,original,ext1);
-		BufferedImage 	image_orig	= imageManager.getImage(file_name);
-		BufferedImage image = imageManager.user_space(image_orig);
-		
-		if(advance == true){
-			//user space is not necessary for Encrypting
-			String publicKey = getRSAKey(message);
-			System.out.println("Original Text: " + message);
-			System.out.println("publicKey: " + publicKey);
-			image = add_text(image,publicKey);
-			JOptionPane.showMessageDialog(new View("Steganography"), "Public key: " + publicKey);
-		}
-		
-		
-		return(imageManager.setImage(image,new File(imageManager.image_path(path,stegan,"png")),"png"));
-	}
+
 	
 	/*
 	 *Decrypt assumes the image being used is of type .png, extracts the hidden text from an image
@@ -113,8 +74,8 @@ public class Steganography
 		try
 		{
 			//user space is necessary for decrypting
-			BufferedImage image  = imageManager.user_space(imageManager.getImage(imageManager.image_path(path,name,"png")));
-			decode = decode_text(imageManager.get_byte_data(image));
+			BufferedImage image  = Image.duplicateImage(Image.getImage(Image.image_path(path,name,"png")));
+			decode = decode_text(Image.get_byte_data(image));
 			return(new String(decode));
 		}
 		catch(Exception e)
@@ -137,16 +98,16 @@ public class Steganography
 	private BufferedImage add_text(BufferedImage image, String text)
 	{
 		//convert all items to byte arrays: image, message, message length
-		byte img[]  = imageManager.get_byte_data(image);
+		byte img[]  = Image.get_byte_data(image);
 		byte msg[] = text.getBytes();
 		byte len[]   = bit_conversion(msg.length);
 		try
 		{
+			System.out.println("bit_conversion: " + len.toString());
 			encode_text(img, len,  0); //0 first position 
 			encode_text(img, msg, 32); //4 bytes of space for length: 4bytes*8bit = 32 bits
 			System.out.println("msg: " + msg.length);
-			System.out.println("len_bitconversion: ");
-			System.out.println(img.length);
+			System.out.println("len_bitconversion: " + img.length);
 		}
 		catch(Exception e)
 		{
@@ -156,9 +117,7 @@ public class Steganography
 		return image;
 	}
 	
-	
-	
-	
+
 	/*
 	 *Gernerates proper byte format of an integer
 	 *@param i The integer to convert
@@ -166,18 +125,18 @@ public class Steganography
 	 */
 	private byte[] bit_conversion(int i)
 	{
-		//originally integers (ints) cast into bytes
-		//byte byte7 = (byte)((i & 0xFF00000000000000L) >>> 56);
-		//byte byte6 = (byte)((i & 0x00FF000000000000L) >>> 48);
-		//byte byte5 = (byte)((i & 0x0000FF0000000000L) >>> 40);
-		//byte byte4 = (byte)((i & 0x000000FF00000000L) >>> 32);
-		
+			
 		//only using 4 bytes
 		byte byte3 = (byte)((i & 0xFF000000) >>> 24); //0
 		byte byte2 = (byte)((i & 0x00FF0000) >>> 16); //0
 		byte byte1 = (byte)((i & 0x0000FF00) >>> 8 ); //0
 		byte byte0 = (byte)((i & 0x000000FF)	   );
+
 		//{0,0,0,byte0} is equivalent, since all shifts >=8 will be 0
+		System.out.println("byte0 test: " + (int)byte0);
+		System.out.println("byte1 test: " + (int)byte1);
+		System.out.println("byte2 test: " + (int)byte2);
+		System.out.println("byte3 test: " + (int)byte3);
 		return(new byte[]{byte3,byte2,byte1,byte0});
 	}
 	
@@ -208,7 +167,6 @@ public class Steganography
 				//assign the bit by taking: [(previous byte value) AND 0xfe] OR bit to add
 				//changes the last bit of the byte in the image to be the bit of addition
 				image[offset] = (byte)((image[offset] & 0xFE) | b );
-				System.out.println("offset: " + offset);
 				offset++;
 			}
 		}
@@ -225,7 +183,7 @@ public class Steganography
 		int length = 0;
 		int offset  = 32;
 		//loop through 32 bytes of data to determine text length
-		for(int i=24; i<32; ++i) //i=24 will also work, as only the 4th byte contains real data
+		for(int i=0; i<32; i++) 
 		{
 			length = (length << 1) | (image[i] & 1);
 		}
@@ -237,7 +195,7 @@ public class Steganography
 		for(int b=0; b<result.length; ++b )
 		{
 			//loop through each bit within a byte of text
-			for(int i=0; i<8; ++i, ++offset)
+			for(int i=0; i<8; i++, offset++)
 			{
 				//assign bit: [(new byte value) << 1] OR [(text byte) AND 1]
 				result[b] = (byte)((result[b] << 1) | (image[offset] & 1));
@@ -246,24 +204,16 @@ public class Steganography
 		return result;
 	}
 	
-	public void hashGenerate(String text) throws Exception 
-	{
-		
-		byte[] byteOfMessage = text.getBytes("UTF-8");
-		MessageDigest md = MessageDigest.getInstance("MD5");
-		byte[] digest = md.digest(byteOfMessage);
-		
-		System.out.println("md: " + md);
-		System.out.println("byte: " + digest.toString());
-		
-		
-		
-	}
-	
-	 public  String getHash(String txt, String hashType) {
+	/*
+	 *Get hash function and generate
+	 *@param text, input text 
+	 *@param hashType, type of hash function inside java security lib
+	 *return String, generated result by hash function
+	 */
+	public  String getHash(String text, String hashType) {
 	        try {
 	                    java.security.MessageDigest md = java.security.MessageDigest.getInstance(hashType);
-	                    byte[] array = md.digest(txt.getBytes());
+	                    byte[] array = md.digest(text.getBytes());
 	                    StringBuffer sb = new StringBuffer();
 	                    for (int i = 0; i < array.length; ++i) {
 	                        sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1,3));
@@ -274,69 +224,5 @@ public class Steganography
 	            }
 	            return null;
 	    }
-
-	 public String getRSAKey(String message) throws Exception{
-			// Get an instance of the RSA key generator
-			KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-			// Generate the keys — might take sometime on slow computers
-			KeyPair myPair = kpg.generateKeyPair();
-			
-			// Get an instance of the Cipher for RSA encryption/decryption
-			Cipher c = Cipher.getInstance("RSA");
-			// Initiate the Cipher, telling it that it is going to Encrypt, giving it the public key
-			c.init(Cipher.ENCRYPT_MODE, myPair.getPublic()); 
-			
-			String publicKey = encodeBase64(myPair.getPublic().getEncoded());
-			System.out.println("Public key: " + publicKey);
-			SealedObject myEncryptedMessage= new SealedObject( message, c);
-	
-			
-			Cipher dec = Cipher.getInstance("RSA");
-			// Initiate the Cipher, telling it that it is going to Decrypt, giving it the private key
-			dec.init(Cipher.DECRYPT_MODE, myPair.getPrivate());
-			String privateKey = encodeBase64(myPair.getPrivate().getEncoded());
-			System.out.println("Private key: " + privateKey);
-			String result = (String) myEncryptedMessage.getObject(dec);
-			System.out.println("foo = "+ result);
-			
-		return publicKey;
-		}
-	 
-	 public String encodeBase64(byte[] keyByte){
-		 Base64.Encoder encoder = Base64.getEncoder();
-		 String keyString = encoder.encodeToString(keyByte);
-		 
-		 return keyString;
-	 }
-	 
-	 public void decodePrivateKey(String publicKey, String privateKey) throws Exception{
-		 
-			
-			byte[] decoder = Base64.getDecoder().decode(privateKey.getBytes("UTF-8"));
-	
-			System.out.println("Public key: " + decoder.toString());
-			
-			
-			
-			Cipher dec = Cipher.getInstance("RSA");
-			// Initiate the Cipher, telling it that it is going to Decrypt, giving it the private key
-			//Takes your byte array of the key as constructor parameter
-			X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(decoder);
-
-			//Takes algorithm used to generate keys (DSA, RSA, DiffieHellman, etc.) as 1st parameter
-			//Takes security provider (SUN, BouncyCastle, etc.) as second parameter
-			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-
-			//Creates a new PublicKey object
-			PublicKey pubKey = keyFactory.generatePublic(pubKeySpec);
-			dec.init(Cipher.DECRYPT_MODE, pubKey);
-			SealedObject myEncryptedMessage= new SealedObject(privateKey ,dec);
-			
-			System.out.println("Private key: " + privateKey);
-			String result = (String) myEncryptedMessage.getObject(dec);
-			System.out.println("foo = "+ result);
-			
-	
-		}
 
 }

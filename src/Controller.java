@@ -19,7 +19,7 @@ public class Controller
 {
 	private JButton encodeButton;
 	private JButton decodeButton;
-	private JButton decodePKButton;
+//	private JButton decodePKButton;
 	private View view;
 	private Steganography model;
 	private Controller controller;
@@ -39,7 +39,8 @@ public class Controller
 	private JCheckBox md5;
 	private JCheckBox sha1;
 	private JCheckBox sha256;
-	private JCheckBox rsa;
+	private JCheckBox nText;
+
 	
 	public Controller(View v, Steganography m){
 		view = v;
@@ -52,7 +53,6 @@ public class Controller
 		
 		encodeButton = view.getEncodeButton();
 		decodeButton = view.getDecodeButton();
-		decodePKButton = view.getDecodePKButton();
 		
 		output = view.getOutputText();
 		input = view.getInputText();
@@ -62,11 +62,10 @@ public class Controller
 		md5 = view.getMD5();
 		sha1 = view.getSHA1();
 		sha256 = view.getSHA256();
-		rsa = view.getRSA();
+		nText = view.getNTEXT();
 		
 		encodeButton.addActionListener(new EncodeButton());
 		decodeButton.addActionListener(new DecodeButton());
-		decodePKButton.addActionListener(new DecodePKButton());
 		
 	}
 	
@@ -111,16 +110,15 @@ public class Controller
 						}else{
 							JOptionPane.showMessageDialog(view, "Cannot encode files");
 						}
-					}else if(rsa.isSelected()){
-							if(model.encode(filePath, fileName, ext, outputFileName, inputText, true)){
-								JOptionPane.showMessageDialog(view, "Successfully encoded an image");
-								SuccessEncoded(filePath, fileName, ext, outputFileName);
-							}else{
-								JOptionPane.showMessageDialog(view, "Cannot encode files");
-							}
-							
 					}
-					else{
+					else if(nText.isSelected()){
+						if(model.encode(filePath, fileName, ext, outputFileName, inputText)){
+							JOptionPane.showMessageDialog(view, "Successfully encoded an image");
+							SuccessEncoded(filePath, fileName, ext, outputFileName);
+						}else{
+							JOptionPane.showMessageDialog(view, "Cannot encode files");
+						}
+					}else{
 						if(model.encode(filePath, fileName, ext, outputFileName, inputText)){
 							JOptionPane.showMessageDialog(view, "Successfully encoded an image");
 							SuccessEncoded(filePath, fileName, ext, outputFileName);
@@ -128,8 +126,6 @@ public class Controller
 							JOptionPane.showMessageDialog(view, "Cannot encode files");
 						}
 					}
-					
-					
 					
 				}
 				catch(Exception except) {
@@ -139,67 +135,7 @@ public class Controller
 			
 		}
 	}
-	
-	public void Update(){
-		outputFileName = "";
-		encoded = false;
-		input.setText("");
-		imageInput.setIcon(null);
-	}
-	
-	private class DecodePKButton implements ActionListener{
-		public void actionPerformed(ActionEvent e){
-			if(!encoded){
-				JFileChooser chooser = new JFileChooser("./");
-				chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-				chooser.setFileFilter(new Image_Filter());
-				int returnVal = chooser.showOpenDialog(null);
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					File fileSelected = chooser.getSelectedFile();
-					try{
-						ext = Image_Filter.getExtension(fileSelected);
-						outputFileName = fileSelected.getName();
-						filePath = fileSelected.getPath();
-						filePath = filePath.substring(0,filePath.length()-outputFileName.length()-1);
-						outputFileName = outputFileName.substring(0, outputFileName.length()-4);
-						System.out.println("outputanme:"+ outputFileName);
-						System.out.println("Length outputFile Byte:" + new File(filePath + "/" + outputFileName + ".png").length() + "byte");
-						
-					}
-					catch(Exception except){
-						JOptionPane.showMessageDialog(view, "File cannot open");
-						System.out.println("outputanme:"+ outputFileName);
-					}
-				}
-			}
-				String message = model.decode(filePath, outputFileName);
-				if(message != ""){
-					String privateKey = JOptionPane.showInputDialog("Please assign private key(Base 64): ");
-					try
-					{
-						model.decodePrivateKey(message, privateKey);
-					}
-					catch (Exception e1)
-					{
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					JOptionPane.showMessageDialog(view, message);
-					try{
-						imageInput.setIcon(new ImageIcon(ImageIO.read(new File(filePath + "/" + outputFileName + ".png"))));
-					}
-					catch(Exception except){
-						JOptionPane.showMessageDialog(view, "Cannot show result");
-					}
-					
-//					output.setText(message);
-					
-				}else{
-					JOptionPane.showMessageDialog(view, "No encoded Text");
-				}
-			}
-	}
-	
+		
 	private class DecodeButton implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			if(!encoded){
@@ -229,7 +165,6 @@ public class Controller
 			
 			String message = model.decode(filePath, outputFileName);
 			if(message != ""){
-				JOptionPane.showMessageDialog(view, message);
 				try{
 					imageInput.setIcon(new ImageIcon(ImageIO.read(new File(filePath + "/" + outputFileName + ".png"))));
 				}
@@ -252,8 +187,10 @@ public class Controller
 		imageInput.setIcon(new ImageIcon(ImageIO.read(new File(filePath + "/" + fileName + "." + ext))));
 		imageOutput.setIcon(new ImageIcon(ImageIO.read(new File(filePath + "/" + outputFileName + ".png"))));
 		encoded = true;
-		System.out.println("Length inputFile Byte:" + new File(filePath + "/" + fileName + ".png").length() + "byte");
-		System.out.println("Length outputFile Byte:" + new File(filePath + "/" + outputFileName + ".png").length() + "byte");
+		JOptionPane.showMessageDialog(view, "Input file size: " + new File(filePath + "/" + fileName + ".png").length() + " byte" + "\n"
+		+ "Output file size: " + new File(filePath + "/" + outputFileName + ".png").length() + " byte");	
+		System.out.println("Length of input file: " + new File(filePath + "/" + fileName + ".png").length() + " byte");
+		System.out.println("Length of output file: " + new File(filePath + "/" + outputFileName + ".png").length() + " byte");
 	}
 	
 	public static void main(String args[])
