@@ -23,14 +23,29 @@ import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.xml.bind.DatatypeConverter;
 
-/*
- *Class Steganography
- */
+/**
+ *
+ * This class use for collect main method that need to use in this program
+ * The methods will refer to use in the controller and send the result for
+ * show in the view.
+ *
+ * Created by Kullapat Siribodhi 58070503404 
+ *            Thanadol Nimitchuchai 58070503442, 20 Nov 2017
+ * 
+ **/
 public class Steganography
 {
-
 	
-	
+	/**
+	* This method use for recieve the image by duplicate method and bring it to encode
+	* with the text and send boolean about the process succeed or not
+	*
+	* @param path : The folder or address of the file
+	* @original : The name of the file
+	* @ext1 : The extension of the file
+	* @stegan :
+	* @message : The text that we want to hide it in the image
+	**/
 	public boolean encode(String path, String original, String ext1, String stegan, String message)
 	{
 		String			file_name 	= Image.image_path(path,original,ext1);
@@ -44,13 +59,24 @@ public class Steganography
 		return(Image.setImage(image,new File(Image.image_path(path,stegan,"png")),"png"));
 	}
 	
+	/**
+	* This method use for recieve the image by duplicate method and bring it to encode
+	* with the text. There are many types of text because they depends on the algorithms that user choose    
+	and send boolean about the process succeed or not after the process finished
+	*
+	* @param path : The folder or address of the file
+	* @original : The name of the file
+	* @ext1 : The extension of the file
+	* @stegan :
+	* @message : The text that we want to hide it in the image
+	* @algorithm : Type of algorithm inside java security library
+	**/
+	
 	public boolean encode(String path, String original, String ext1, String stegan, String message, String algorithm)
 	{
 		String			file_name 	= Image.image_path(path,original,ext1);
 		BufferedImage 	image_orig	= Image.getImage(file_name);
 		
-		
-		//user space is not necessary for Encrypting
 		BufferedImage image = Image.duplicateImage(image_orig);
 		String hash = getHash(message, algorithm);
 		System.out.println("Original Text: " + message);
@@ -62,12 +88,13 @@ public class Steganography
 	}
 
 	
-	/*
-	 *Decrypt assumes the image being used is of type .png, extracts the hidden text from an image
-	 *@param path   The path (folder) containing the image to extract the message from
-	 *@param name The name of the image to extract the message from
-	 *@param type integer representing either basic or advanced encoding
-	 */
+     /**
+     * This method use for bring image from the device that has .png type to extract the hidden text from the image
+     *
+     * @param path : the path of the image that we want to extract message with a decode process
+     * @param name : the name of the image that we want to extract message with a decode process
+     * @return return the string that are hidden in the image file
+     **/
 	public String decode(String path, String name)
 	{
 		byte[] decode;
@@ -90,12 +117,14 @@ public class Steganography
 	
 	
 	
-	/*
-	 *Handles the addition of text into an image
-	 *@param image The image to add hidden text to
-	 *@param text	 The text to hide in the image
-	 *@return Returns the image with the text embedded in it
-	 */
+	/**
+	 * This method use for add the hidden text into the image by use replacement byte between image and text
+	 *
+	 * @param image : The image that want to add hidden text into
+	 * @param text : The text that we want to hide it in the image
+	 * @return : return the image with the embedded text like secret message in the picture
+	 
+	 **/
 	private BufferedImage add_text(BufferedImage image, String text)
 	{
 		//convert all items to byte arrays: image, message, message length
@@ -119,11 +148,15 @@ public class Steganography
 	}
 	
 
-	/*
-	 *Gernerates proper byte format of an integer
-	 *@param i The integer to convert
-	 *@return Returns a byte[4] array converting the supplied integer into bytes
-	 */
+     /**
+     * This method use for generate byte format for store the binary value that come from
+     * quantity of letter, 1 byte can store 256 letters and store in the next byte when quantity is over 256
+     * The capacity of letter that program can process is 256^4 letters
+     *
+     * @param i : The integer that come from message length  to convert
+     * @return return a byte[4] array that come from converting message length to bytes
+     **/
+	
 	private byte[] bit_conversion(int i)
 	{
 			
@@ -141,13 +174,16 @@ public class Steganography
 		return(new byte[]{byte3,byte2,byte1,byte0});
 	}
 	
-	/*
-	 *Encode an array of bytes into another array of bytes at a supplied offset
-	 *@param image	 Array of data representing an image
-	 *@param addition Array of data to add to the supplied image data array
-	 *@param offset	  The offset into the image array to add the addition data
-	 *@return Returns data Array of merged image and addition data
-	 */
+     /**
+     * This method use for encode byte arrays of text into bytes arrays of image if the capacity of image
+     * can fit the text
+     *
+     * @param image : Byte array of data represent an image
+     * @param addition : Byte array of data that add into image data array
+     * @param offset : The offset that need to use when the image array add the addition data into it
+     * @return return data array image that has data Array of merged between image and addition data
+     **/
+	
 	private byte[] encode_text(byte[] image, byte[] addition, int offset)
 	{
 		//check that the data + offset will fit in the image
@@ -174,11 +210,12 @@ public class Steganography
 		return image;
 	}
 	
-	/*
-	 *Retrieves hidden text from an image
-	 *@param image Array of data, representing an image
-	 *@return Array of data which contains the hidden text
-	 */
+     /**
+     * This method use for extract the hidden text that hide in the image and get string like a result
+     * 
+     * @param image : Array of data that represent the image that has hidden text
+     * @return Array of data that represent the hidden text
+     **/
 	private byte[] decode_text(byte[] image)
 	{
 		int length = 0;
@@ -205,12 +242,15 @@ public class Steganography
 		return result;
 	}
 	
-	/*
-	 *Get hash function and generate
-	 *@param text, input text 
-	 *@param hashType, type of hash function inside java security lib
-	 *return String, generated result by hash function
-	 */
+     /**
+     * This method use for transform normal text into hash function form depend on
+     * the hash function type that we choose
+     *
+     * @param text, Input text that we want to hide it into image
+     * @param hashType, Type of hash function inside java security library
+     * return string that generate the result by use hash function that we choose
+     **/
+	
 	public  String getHash(String text, String hashType) {
 	        try {
 	                    java.security.MessageDigest md = java.security.MessageDigest.getInstance(hashType);
