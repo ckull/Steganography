@@ -15,11 +15,20 @@ import javax.imageio.ImageIO;
 import javax.swing.*; 
 
 
+/**
+ *
+ * This class is the mediator between steganography and view and when which one have some changes, controller
+ * will reacts to the other one by execute or update that make view and steganography connect together all the time.
+ * When user click encode or decode button in the view, controller are going to bring method in the steganography to use
+ * and show the result message or hidden text in the view
+ *
+ * Created by Kullapat Siribodhi 58070503404
+ *            Thanadol Nimitchuchai 58070503442, 20 Nov 2017
+ * **/
 public class Controller
 {
 	private JButton encodeButton;
 	private JButton decodeButton;
-//	private JButton decodePKButton;
 	private View view;
 	private Steganography model;
 	private Controller controller;
@@ -41,7 +50,7 @@ public class Controller
 	private JCheckBox sha256;
 	private JCheckBox nText;
 
-	
+	/* constructor of controller */
 	public Controller(View v, Steganography m){
 		view = v;
 		model = m;
@@ -64,11 +73,20 @@ public class Controller
 		sha256 = view.getSHA256();
 		nText = view.getNTEXT();
 		
+		/* use ActionListener for encode and decode button for clicking */
 		encodeButton.addActionListener(new EncodeButton());
 		decodeButton.addActionListener(new DecodeButton());
 		
 	}
 	
+	/**
+	 * This class use after the encode button has clicked with ActionListener
+	 * User need to select the image from your device for encode by JFileChooser and input
+	 * the name of file that will be your output file
+	 * There are 4 types of text that you need to choose : normal,md5,sha1 and sha56
+	 * The encode method is the main method in this class
+	 * We will get the image that already has hidden the text like the result
+	 * **/
 	private class EncodeButton implements ActionListener{
 		
 		public void actionPerformed(ActionEvent e){
@@ -137,6 +155,15 @@ public class Controller
 		}
 	}
 		
+	/** 
+	 * 
+	 * This class use after decode button has clicked with ActionListener
+	 * We can separate in to 2 cases that we can encode :
+	 * First case, we use the current image that we encoded
+	 * Second case, we choose the image from the device by JFileChooser
+	 * we will get the string that hided in the image like the result
+	 * 
+	 * **/
 	private class DecodeButton implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			if(!encoded){
@@ -196,6 +223,17 @@ public class Controller
 		}
 	}
 
+	/**
+	 *
+	 * This class use to show the size of input file and output file that already has hidden the text and the length
+	 * of text that we type in the terminal after encode method succeed its process
+	 *
+	 * @param filePath : The folder or address of the file
+	 * @param fileName : The name of the file
+	 * @param ext : The extension of the file
+	 * @param outputFileName : The name of output file
+	 *                          
+	 * **/
 	public void successEncoded(String filePath, String fileName, String ext, String outputFileName) throws Exception{
 		tabPanel.setSelectedIndex(2);
 		

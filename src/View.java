@@ -7,6 +7,18 @@ import java.awt.Insets;
 
 import javax.swing.*; 
 
+/**
+ *
+ * This class is our program user interface which need to show to user for process every method
+ * We separate into 3 parts encode panel, decode panel and image panel
+ * - Encode panel need to receive text by type some strings in the panel, import image from device
+ * by press encode button and give the name to the output file that will appear in your device
+ * - Decode panel need to receive the image file that user want to decode for extract hidden message from the image
+ * - Image panel use for show original picture and the picture that already encode text into the image
+ *
+ * Created by Kullapat Siribodhi 58070503404
+ *            Thanadol Nimitchuchai 58070503442, 20 Nov 2017
+ * **/
 public class View extends JFrame
 {
 	JFrame f = new JFrame();
@@ -23,10 +35,10 @@ public class View extends JFrame
 	private JTabbedPane tp;
 	private JLabel image_input;
 	private JLabel image_output;
-	private JCheckBox md5;
-	private JCheckBox sha1;
-	private JCheckBox sha256;
-	private JCheckBox nText;
+	private JCheckBox md5; /* type of hash function */
+	private JCheckBox sha1; /* type of hash function */
+	private JCheckBox sha256; /* type of hash function */
+	private JCheckBox nText; /* type of hash function */
 	
 	public View(String name)
 	{
@@ -95,15 +107,17 @@ public class View extends JFrame
 		return decodeButton;
 	}
 	
-//	public JButton getDecodePKButton(){
-//		return decodePK;
-//	}
-	
 	public JTabbedPane getTabPanel(){
 		return tp;
 	}
 	
-	
+	/** 
+	 * This class is the panel of the encode method which need to input the text for
+	 * hide in the image like secret message. There are 4 types of hash function types which have different algorithms and different
+	 * result. The encode button is the main button that start the process and we need to define output
+	 * filename which will appear in your device after encode processing succeed.
+	 * 
+	 * **/
 	private class  Encode_Panel extends JPanel{
 		public Encode_Panel(){
 			GridBagLayout layout = new GridBagLayout(); 
@@ -179,6 +193,12 @@ public class View extends JFrame
 		}
 	}
 	
+	/**
+	 *  This class is the panel of decode method which will show the string after we extract the hidden text
+	 * from the image. The decode button is the main button that start the process and we need to input the image file
+	 * for start decode processing.
+	 * 
+	 * **/
 	private class Decode_Panel extends JPanel{
 		public Decode_Panel(){
 			GridBagLayout layout = new GridBagLayout(); 
@@ -213,6 +233,11 @@ public class View extends JFrame
 		}
 	}
 	
+	/** 
+	 * This class is the panel that use for show original image and the image which already encode by add text
+	 * into image by byte array replacement. Two pictures will be very similarly.
+	 * 
+	 * **/
 	private class Image_Panel extends JPanel {
 		public Image_Panel()
 		{
