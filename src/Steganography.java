@@ -45,6 +45,8 @@ public class Steganography
 	* @ext1 : The extension of the file
 	* @stegan :
 	* @message : The text that we want to hide it in the image
+	* @return return the boolean about encode process succeed or not
+	*
 	**/
 	public boolean encode(String path, String original, String ext1, String stegan, String message)
 	{
@@ -70,8 +72,9 @@ public class Steganography
 	* @stegan :
 	* @message : The text that we want to hide it in the image
 	* @algorithm : Type of algorithm inside java security library
+	* @return return the boolean about encode process succeed or not
+	*
 	**/
-	
 	public boolean encode(String path, String original, String ext1, String stegan, String message, String algorithm)
 	{
 		String			file_name 	= Image.image_path(path,original,ext1);
@@ -123,7 +126,6 @@ public class Steganography
 	 * @param image : The image that want to add hidden text into
 	 * @param text : The text that we want to hide it in the image
 	 * @return : return the image with the embedded text like secret message in the picture
-	 
 	 **/
 	private BufferedImage add_text(BufferedImage image, String text)
 	{
