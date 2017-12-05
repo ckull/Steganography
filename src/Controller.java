@@ -154,6 +154,22 @@ public class Controller
 							outputFileName = outputFileName.substring(0, outputFileName.length()-4);
 							System.out.println("outputname:"+ outputFileName);
 							System.out.println("Length outputFile Byte:" + new File(filePath + "/" + outputFileName + ".png").length() + "byte");
+
+							String message = model.decode(filePath, outputFileName);
+							if(message != ""){
+								try{
+									imageInput.setIcon(new ImageIcon(ImageIO.read(new File(filePath + "/" + outputFileName + ".png"))));
+								}
+								catch(Exception except){
+									JOptionPane.showMessageDialog(view, "Cannot show result");
+								}
+								
+								System.out.println("message: " + message);
+								output.setText(message);
+								
+							}else{
+								JOptionPane.showMessageDialog(view, "No encoded Text");
+							}
 						}
 						catch(Exception except){
 							JOptionPane.showMessageDialog(view, except);
@@ -186,7 +202,7 @@ public class Controller
 		imageInput.setIcon(new ImageIcon(ImageIO.read(new File(filePath + "/" + fileName + "." + ext))));
 		imageOutput.setIcon(new ImageIcon(ImageIO.read(new File(filePath + "/" + outputFileName + ".png"))));
 		encoded = true;
-		JOptionPane.showMessageDialog(view, "Input file size: " + new File(filePath + "/" + fileName + ".png").length() + " byte" + "\n"
+		JOptionPane.showMessageDialog(view, "Input file size: " + new File(filePath + "/" + fileName + "." + ext).length() + " byte" + "\n"
 		+ "Output file size: " + new File(filePath + "/" + outputFileName + ".png").length() + " byte");	
 		System.out.println("Length of input file: " + new File(filePath + "/" + fileName + ".png").length() + " byte");
 		System.out.println("Length of output file: " + new File(filePath + "/" + outputFileName + ".png").length() + " byte");
