@@ -146,7 +146,7 @@ public class Controller
 				int returnVal = chooser.showOpenDialog(null);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File fileSelected = chooser.getSelectedFile();
-						try{
+						try	{
 							ext = Image_Filter.getExtension(fileSelected);
 							outputFileName = fileSelected.getName();
 							filePath = fileSelected.getPath();
@@ -157,27 +157,24 @@ public class Controller
 						}
 						catch(Exception except){
 							JOptionPane.showMessageDialog(view, except);
-							System.out.println("outputanme:"+ outputFileName);
+							System.out.println("outputname:"+ outputFileName);
 						}
-
-						if(fileSelected == null ){
-							return;
-						}
-						String message = model.decode(filePath, outputFileName);
-						if(message != ""){
-							try{
-								imageInput.setIcon(new ImageIcon(ImageIO.read(new File(filePath + "/" + outputFileName + ".png"))));
-							}
-							catch(Exception except){
-								JOptionPane.showMessageDialog(view, "Cannot show result");
-							}
-							
-							System.out.println("message: " + message);
-							output.setText(message);
-							
-						}else{
-							JOptionPane.showMessageDialog(view, "No encoded Text");
-						}
+				}
+			}else{
+				String message = model.decode(filePath, outputFileName);
+				if(message != ""){
+					try{
+						imageInput.setIcon(new ImageIcon(ImageIO.read(new File(filePath + "/" + outputFileName + ".png"))));
+					}
+					catch(Exception except){
+						JOptionPane.showMessageDialog(view, "Cannot show result");
+					}
+					
+					System.out.println("message: " + message);
+					output.setText(message);
+					
+				}else{
+					JOptionPane.showMessageDialog(view, "No encoded Text");
 				}
 			}
 		}
