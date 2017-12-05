@@ -78,59 +78,60 @@ public class Controller
 			int returnVal = chooser.showOpenDialog(null);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				File fileSelected = chooser.getSelectedFile();
-				try{
-					inputText = input.getText();
-					ext = Image_Filter.getExtension(fileSelected);
-					fileName = fileSelected.getName();
-					filePath = fileSelected.getPath();
-					System.out.println("Before " + "InputText: " + inputText + " ext: " + ext + " fileName: " + fileName + " filePath: " + filePath);
-					filePath = filePath.substring(0,filePath.length()-fileName.length()-1);
-					fileName = fileName.substring(0, fileName.length()-4);
-					System.out.println("InputText: " + inputText + " ext: " + ext + " fileName: " + fileName + " filePath: " + filePath);
-					outputFileName = JOptionPane.showInputDialog("Please assign an output file name: ");
-					
-					if(md5.isSelected()){
-						if(model.encode(filePath, fileName, ext, outputFileName, inputText, "md5")){
-							JOptionPane.showMessageDialog(view, "Successfully encoded an image");
-							SuccessEncoded(filePath, fileName, ext, outputFileName);
-						}else{
-							JOptionPane.showMessageDialog(view, "Cannot encode files");
+				
+					try{
+						inputText = input.getText();
+						ext = Image_Filter.getExtension(fileSelected);
+						fileName = fileSelected.getName();
+						filePath = fileSelected.getPath();
+						System.out.println("Before " + "InputText: " + inputText + " ext: " + ext + " fileName: " + fileName + " filePath: " + filePath);
+						filePath = filePath.substring(0,filePath.length()-fileName.length()-1);
+						fileName = fileName.substring(0, fileName.length()-4);
+						System.out.println("InputText: " + inputText + " ext: " + ext + " fileName: " + fileName + " filePath: " + filePath);
+						outputFileName = JOptionPane.showInputDialog("Please assign an output file name: ");
+						
+						if(md5.isSelected()){
+							if(model.encode(filePath, fileName, ext, outputFileName, inputText, "md5")){
+								JOptionPane.showMessageDialog(view, "successfully encoded an image");
+								successEncoded(filePath, fileName, ext, outputFileName);
+							}else{
+								JOptionPane.showMessageDialog(view, "Cannot encode files");
+							}
+						}else if(sha1.isSelected()){
+							if(model.encode(filePath, fileName, ext, outputFileName, inputText, "SHA-1")){
+								JOptionPane.showMessageDialog(view, "successfully encoded an image");
+								successEncoded(filePath, fileName, ext, outputFileName);
+							}else{
+								JOptionPane.showMessageDialog(view, "Cannot encode files");
+							}
+						}else if(sha256.isSelected()){
+							if(model.encode(filePath, fileName, ext, outputFileName, inputText, "SHA-256")){
+								JOptionPane.showMessageDialog(view, "successfully encoded an image");
+								successEncoded(filePath, fileName, ext, outputFileName);
+							}else{
+								JOptionPane.showMessageDialog(view, "Cannot encode files");
+							}
 						}
-					}else if(sha1.isSelected()){
-						if(model.encode(filePath, fileName, ext, outputFileName, inputText, "SHA-1")){
-							JOptionPane.showMessageDialog(view, "Successfully encoded an image");
-							SuccessEncoded(filePath, fileName, ext, outputFileName);
+						else if(nText.isSelected()){
+							if(model.encode(filePath, fileName, ext, outputFileName, inputText)){
+								JOptionPane.showMessageDialog(view, "successfully encoded an image");
+								successEncoded(filePath, fileName, ext, outputFileName);
+							}else{
+								JOptionPane.showMessageDialog(view, "Cannot encode files");
+							}
 						}else{
-							JOptionPane.showMessageDialog(view, "Cannot encode files");
+							if(model.encode(filePath, fileName, ext, outputFileName, inputText)){
+								JOptionPane.showMessageDialog(view, "successfully encoded an image");
+								successEncoded(filePath, fileName, ext, outputFileName);
+							}else{
+								JOptionPane.showMessageDialog(view, "Cannot encode files");
+							}
 						}
-					}else if(sha256.isSelected()){
-						if(model.encode(filePath, fileName, ext, outputFileName, inputText, "SHA-256")){
-							JOptionPane.showMessageDialog(view, "Successfully encoded an image");
-							SuccessEncoded(filePath, fileName, ext, outputFileName);
-						}else{
-							JOptionPane.showMessageDialog(view, "Cannot encode files");
-						}
+						
 					}
-					else if(nText.isSelected()){
-						if(model.encode(filePath, fileName, ext, outputFileName, inputText)){
-							JOptionPane.showMessageDialog(view, "Successfully encoded an image");
-							SuccessEncoded(filePath, fileName, ext, outputFileName);
-						}else{
-							JOptionPane.showMessageDialog(view, "Cannot encode files");
-						}
-					}else{
-						if(model.encode(filePath, fileName, ext, outputFileName, inputText)){
-							JOptionPane.showMessageDialog(view, "Successfully encoded an image");
-							SuccessEncoded(filePath, fileName, ext, outputFileName);
-						}else{
-							JOptionPane.showMessageDialog(view, "Cannot encode files");
-						}
+					catch(Exception except) {
+						JOptionPane.showMessageDialog(view, "File cannot open");
 					}
-					
-				}
-				catch(Exception except) {
-					JOptionPane.showMessageDialog(view, "File cannot open");
-				}
 			}
 			
 		}
@@ -145,43 +146,44 @@ public class Controller
 				int returnVal = chooser.showOpenDialog(null);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
 					File fileSelected = chooser.getSelectedFile();
-					try{
-						ext = Image_Filter.getExtension(fileSelected);
-						outputFileName = fileSelected.getName();
-						filePath = fileSelected.getPath();
-						filePath = filePath.substring(0,filePath.length()-outputFileName.length()-1);
-						outputFileName = outputFileName.substring(0, outputFileName.length()-4);
-						System.out.println("outputanme:"+ outputFileName);
-						System.out.println("Length outputFile Byte:" + new File(filePath + "/" + outputFileName + ".png").length() + "byte");
-						
-						
-					}
-					catch(Exception except){
-						JOptionPane.showMessageDialog(view, "File cannot open");
-						System.out.println("outputanme:"+ outputFileName);
-					}
+						try{
+							ext = Image_Filter.getExtension(fileSelected);
+							outputFileName = fileSelected.getName();
+							filePath = fileSelected.getPath();
+							filePath = filePath.substring(0,filePath.length()-outputFileName.length()-1);
+							outputFileName = outputFileName.substring(0, outputFileName.length()-4);
+							System.out.println("outputname:"+ outputFileName);
+							System.out.println("Length outputFile Byte:" + new File(filePath + "/" + outputFileName + ".png").length() + "byte");
+						}
+						catch(Exception except){
+							JOptionPane.showMessageDialog(view, except);
+							System.out.println("outputanme:"+ outputFileName);
+						}
+
+						if(fileSelected == null ){
+							return;
+						}
+						String message = model.decode(filePath, outputFileName);
+						if(message != ""){
+							try{
+								imageInput.setIcon(new ImageIcon(ImageIO.read(new File(filePath + "/" + outputFileName + ".png"))));
+							}
+							catch(Exception except){
+								JOptionPane.showMessageDialog(view, "Cannot show result");
+							}
+							
+							System.out.println("message: " + message);
+							output.setText(message);
+							
+						}else{
+							JOptionPane.showMessageDialog(view, "No encoded Text");
+						}
 				}
-			}
-			
-			String message = model.decode(filePath, outputFileName);
-			if(message != ""){
-				try{
-					imageInput.setIcon(new ImageIcon(ImageIO.read(new File(filePath + "/" + outputFileName + ".png"))));
-				}
-				catch(Exception except){
-					JOptionPane.showMessageDialog(view, "Cannot show result");
-				}
-				
-				System.out.println(message);
-				output.setText(message);
-				
-			}else{
-				JOptionPane.showMessageDialog(view, "No encoded Text");
 			}
 		}
 	}
 
-	public void SuccessEncoded(String filePath, String fileName, String ext, String outputFileName) throws Exception{
+	public void successEncoded(String filePath, String fileName, String ext, String outputFileName) throws Exception{
 		tabPanel.setSelectedIndex(2);
 		
 		imageInput.setIcon(new ImageIcon(ImageIO.read(new File(filePath + "/" + fileName + "." + ext))));
