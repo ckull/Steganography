@@ -43,7 +43,7 @@ public class Steganography
 	* @param path : The folder or address of the file
 	* @original : The name of the file
 	* @ext1 : The extension of the file
-	* @stegan :
+	* @stegan :The output file name
 	* @message : The text that we want to hide it in the image
 	* @return return the boolean about encode process succeed or not
 	*
@@ -69,7 +69,7 @@ public class Steganography
 	* @param path : The folder or address of the file
 	* @original : The name of the file
 	* @ext1 : The extension of the file
-	* @stegan :
+	* @stegan : the output file name
 	* @message : The text that we want to hide it in the image
 	* @algorithm : Type of algorithm inside java security library
 	* @return return the boolean about encode process succeed or not
